@@ -1,0 +1,37 @@
+1.There is
+How It Works?
+1.User sends only playerName and optionally country.
+2.API searches for a matching player.
+3. If found, API returns player stats (hundreds, fifties, etc.).
+4. If not found, API returns 404 Player not found.
+-------------------------
+request-
+it contains PN and optional Country
+controller-
+1.it take the given request and sends it to the respective place hereit will send
+   into playerservice interface.
+2. playerservice interface it will connect to playerserviceimpl
+
+-----connecting to db------
+1.add post postgresql lib in build.gradle.
+2.configure application.properties file like url,name,password..etc
+  A.url-we can get this from the db,with this we need to create a schema with particular name and that sname will be in the url.
+  B.
+
+====================
+--what we can acheive with the repository?
+A.we can fetch,update,delete the date from the entite table
+
+=================
+**key diff between rep n playerservice as they are similar code**
+--------Feature	Repository (PlayerRepository)-------
+Purpose	Directly interacts with the database
+Extends	JpaRepository<Player, Long> (Spring Data JPA)
+Contains	Only database-related queries
+Used By	Service layer (PlayerServiceImpl)
+ ----------Service (PlayerService)--------------
+ Handles business logic before/after calling repository
+ A custom interface (like PlayerService)
+ Calls repository methods and adds extra logic if needed
+ Controller layer (PlayerController)
+================================================================
