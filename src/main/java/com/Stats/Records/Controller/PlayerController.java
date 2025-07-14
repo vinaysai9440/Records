@@ -26,6 +26,7 @@ public class PlayerController {
         PlayerResponse response = playerService.savePlayer(request);
 
         return response;
+
     }
     @GetMapping("/find")
     public PlayerResponse findPl(@RequestBody PlayerRequest request)
@@ -38,6 +39,17 @@ public class PlayerController {
         return response;
 
     }
+
+    @GetMapping("/avg")
+    public PlayerResponse findAvg(@RequestBody PlayerRequest request)
+    {
+        PlayerResponse response = playerService.batsMan_AVG(request.getPlayerName(),request.getCountry());
+
+
+        return response;
+
+    }
+
 
 
 }

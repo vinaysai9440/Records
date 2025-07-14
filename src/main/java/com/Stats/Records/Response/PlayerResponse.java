@@ -19,4 +19,5 @@ public class PlayerResponse {
     private int fours;
     private int statuscode;
     private String message;
+    private Float avg;
 }

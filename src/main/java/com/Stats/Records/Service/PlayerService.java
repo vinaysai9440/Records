@@ -9,4 +9,5 @@ import java.util.Optional;
 public interface PlayerService {
     PlayerResponse findByPlayerNameAndCountry(String playerName,String country);
     PlayerResponse savePlayer(PlayerRequest request);
+    PlayerResponse batsMan_AVG(String PlayerName,String Country);
 }
