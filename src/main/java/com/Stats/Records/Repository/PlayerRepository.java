@@ -17,4 +17,5 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     //We can call this (findByPlayerName(String playerName))---as contract.
     Player findByPlayerName(String playerName);//"findBy" is useredefined function and telling it to filter playernamr (in DB perspective)
     Player findByPlayerNameAndCountry(String playerName, String country);
+    Player findByPlayerNameIgnoreCase(String playerName);
 }

@@ -6,12 +6,37 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 
+type PlayerData = {
+  name: string
+  country: string
+  stats: {
+    matches: number
+    runs: number
+    hundreds: number
+    fifties: number
+    average: number
+  }
+}
+
+type AssistantResponse = {
+  statusCode: number
+  intent: string
+  toolUsed?: string
+  message: string
+  data?: unknown
+}
+
 export default function PlayerSearch() {
   const [playerName, setPlayerName] = useState("")
   const [country, setCountry] = useState("")
-  const [playerData, setPlayerData] = useState(null)
+  const [playerData, setPlayerData] = useState<PlayerData | null>(null)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  const [assistantQuery, setAssistantQuery] = useState("")
+  const [assistantData, setAssistantData] = useState<AssistantResponse | null>(null)
+  const [assistantError, setAssistantError] = useState("")
+  const [assistantLoading, setAssistantLoading] = useState(false)
 
   const searchPlayer = async () => {
     if (!playerName.trim()) {
@@ -39,7 +64,7 @@ export default function PlayerSearch() {
         return
       }
 
-      const data = await response.json()
+      const data = (await response.json()) as PlayerData
       setPlayerData(data)
     } catch (err) {
       setError("Failed to fetch player data")
@@ -49,8 +74,43 @@ export default function PlayerSearch() {
     }
   }
 
+  const askAssistant = async () => {
+    if (!assistantQuery.trim()) {
+      setAssistantError("Please enter a question")
+      return
+    }
+
+    setAssistantLoading(true)
+    setAssistantError("")
+
+    try {
+      const response = await fetch("/api/assistant", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: assistantQuery }),
+      })
+
+      const data = (await response.json()) as AssistantResponse
+
+      if (!response.ok) {
+        setAssistantError(data.message || "Assistant could not process the query")
+        setAssistantData(null)
+        return
+      }
+
+      setAssistantData(data)
+    } catch (err) {
+      setAssistantError("Failed to reach assistant")
+      setAssistantData(null)
+    } finally {
+      setAssistantLoading(false)
+    }
+  }
+
   return (
-    <div className="container mx-auto py-10 max-w-md">
+    <div className="container mx-auto py-10 max-w-3xl space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Player Statistics Search</CardTitle>
@@ -99,7 +159,45 @@ export default function PlayerSearch() {
           </div>
         </CardContent>
       </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Stats Assistant (Natural Language)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="assistantQuery">Ask a question</Label>
+              <Input
+                id="assistantQuery"
+                value={assistantQuery}
+                onChange={(e) => setAssistantQuery(e.target.value)}
+                placeholder="e.g. top 5 batters by average in test"
+              />
+              <p className="text-xs text-muted-foreground">
+                Try: "top 5 players by runs", "find rankings of Virat Kohli", "average of Virat Kohli from India", "find player Joe Root".
+              </p>
+            </div>
+
+            <Button onClick={askAssistant} disabled={assistantLoading} className="w-full">
+              {assistantLoading ? "Thinking..." : "Ask Assistant"}
+            </Button>
+
+            {assistantError && <div className="text-red-500 text-sm mt-2">{assistantError}</div>}
+
+            {assistantData && (
+              <div className="mt-4 p-4 border rounded-md bg-muted space-y-2">
+                <div><span className="font-semibold">Intent:</span> {assistantData.intent}</div>
+                {assistantData.toolUsed && <div><span className="font-semibold">Tool:</span> {assistantData.toolUsed}</div>}
+                <div><span className="font-semibold">Message:</span> {assistantData.message}</div>
+                <pre className="text-xs overflow-auto p-2 rounded bg-background border">
+                  {JSON.stringify(assistantData.data, null, 2)}
+                </pre>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
-
