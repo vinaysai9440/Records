@@ -1,0 +1,33 @@
+What is Spring Security?
+It’s a security guard for your app.
+Every request that comes in is checked:
+Are you logged in?
+Do you have permission to access this page?
+If yes → request is allowed.
+If no → it’s blocked (returns error 401 Unauthorized).
+
+Breaking it Down
+1. @Configuration
+
+This tells Spring:
+➡️ “Hey, this class contains special beans (objects) that configure how the app should behave.”
+
+Without this, Spring would ignore the methods inside.
+
+2. SecurityFilterChain
+
+Think of it as the security rules list.
+It decides:
+
+Which requests need login.
+
+What type of login (Basic, Form, JWT).
+
+What extra protections are on/off (like CSRF).
+What does this mean in simple words?
+
+Every URL in your app requires login (no public pages).
+
+The login method is HTTP Basic Auth → the browser/app must send username:password with every request.
+
+CSRF is off (fine for APIs, not fine for browser forms).
