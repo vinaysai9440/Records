@@ -8,15 +8,6 @@ import lombok.*;
 @Getter
 @Setter
 public class PlayerRequest {
-    private Long playerId;
     private String playerName;
-    private String country;  // Optional
-    private int innings;
-    private int runs;
-    private int hundreds;
-    private int fifties;
-    private int sixes;
-    private int fours;
-
-
+    private String country;
 }

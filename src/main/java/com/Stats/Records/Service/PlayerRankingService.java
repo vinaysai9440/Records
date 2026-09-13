@@ -1,14 +1,18 @@
 package com.Stats.Records.Service;
 
+import com.Stats.Records.Repository.PlayerFormatStatsRepository;
 import com.Stats.Records.Repository.PlayerRankingRepository;
 import com.Stats.Records.Repository.PlayerRepository;
+import com.Stats.Records.entites.Format;
 import com.Stats.Records.entites.Player;
+import com.Stats.Records.entites.PlayerFormatStats;
 import com.Stats.Records.entites.PlayerRanking;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,6 +21,7 @@ public class PlayerRankingService {
 
     private final PlayerRankingRepository playerRankingRepository;
     private final PlayerRepository playerRepository;
+    private final PlayerFormatStatsRepository playerFormatStatsRepository;
 
     public List<PlayerRanking> getTopRankings(String metric, String format, int limit) {
         return playerRankingRepository.findTopRankingsByMetricAndFormat(metric, format, LocalDate.now())
@@ -33,47 +38,44 @@ public class PlayerRankingService {
         List<Player> players = playerRepository.findAll();
         LocalDate today = LocalDate.now();
 
-        // Update rankings for different metrics
-        updateRankingsByMetric(players, "runs", today);
-        updateRankingsByMetric(players, "average", today);
-        updateRankingsByMetric(players, "strike_rate", today);
+        for (Format format : Format.values()) {
+            updateRankingsByMetric(players, "runs", format, today);
+            updateRankingsByMetric(players, "average", format, today);
+            updateRankingsByMetric(players, "strike_rate", format, today);
+        }
     }
 
-    private void updateRankingsByMetric(List<Player> players, String metric, LocalDate date) {
-        // Sort players based on the metric
-        List<Player> sortedPlayers = players.stream()
-                .sorted((p1, p2) -> {
-                    double value1 = getMetricValue(p1, metric);
-                    double value2 = getMetricValue(p2, metric);
-                    return Double.compare(value2, value1); // Descending order
-                })
+    private void updateRankingsByMetric(List<Player> players, String metric, Format format, LocalDate date) {
+        List<PlayerFormatStats> sortedStats = players.stream()
+                .map(player -> playerFormatStatsRepository
+                        .findByPlayer_PlayerIdAndFormat(player.getPlayerId(), format)
+                        .orElse(null))
+                .filter(Objects::nonNull)
+                .sorted((s1, s2) -> Double.compare(getMetricValue(s2, metric), getMetricValue(s1, metric)))
                 .collect(Collectors.toList());
 
-        // Save rankings
-        for (int i = 0; i < sortedPlayers.size(); i++) {
-            Player player = sortedPlayers.get(i);
+        for (int i = 0; i < sortedStats.size(); i++) {
+            PlayerFormatStats stats = sortedStats.get(i);
             PlayerRanking ranking = PlayerRanking.builder()
-                    .player(player)
+                    .player(stats.getPlayer())
                     .rankingDate(date)
                     .ranking(i + 1)
                     .metric(metric)
-                    .metricValue(getMetricValue(player, metric))
-                    .format("TEST") // You can make this configurable
+                    .metricValue(getMetricValue(stats, metric))
+                    .format(format.name())
                     .build();
             playerRankingRepository.save(ranking);
         }
     }
 
-    private double getMetricValue(Player player, String metric) {
+    private double getMetricValue(PlayerFormatStats stats, String metric) {
         switch (metric) {
             case "runs":
-                return player.getRuns();
+                return stats.getRuns();
             case "average":
-                return player.getInnings() > 0 ? (double) player.getRuns() / player.getInnings() : 0;
+                return stats.getInnings() > 0 ? (double) stats.getRuns() / stats.getInnings() : 0;
             case "strike_rate":
-                // Assuming you have balls faced in your Player entity
-                // return player.getBallsFaced() > 0 ? (double) player.getRuns() / player.getBallsFaced() * 100 : 0;
-                return 0; // Implement when you add balls faced to Player entity
+                return stats.getBallsFaced() > 0 ? (double) stats.getRuns() / stats.getBallsFaced() * 100 : 0;
             default:
                 return 0;
         }

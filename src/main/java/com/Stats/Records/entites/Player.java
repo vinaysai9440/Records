@@ -10,8 +10,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class  Player{
-
+public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,12 +21,4 @@ public class  Player{
 
     @Column(nullable = false)
     private String country;
-    private int innings;
-    private int runs;
-    private int hundreds;
-    private int fifties;
-    private int sixes;
-    private int fours;
-
-
 }
