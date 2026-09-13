@@ -19,7 +19,10 @@ built-in web UI for looking up a player's career numbers by format.
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/vinaysai9440/Records)
 
-**Live link:** _not deployed yet — click the button above to deploy your own copy for free on Render (uses the included `render.yaml`), then drop the URL here._
+**Live link:** https://records-17zn.onrender.com/
+
+(Free-tier Render services spin down after inactivity, so the first load
+after a while may take 30-60 seconds to wake up.)
 
 The blueprint deploys the app with the in-memory `dev` profile, so no database
 setup is needed — it comes up with the seeded sample players out of the box.
