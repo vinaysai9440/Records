@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Player Records</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="page">
+        <header class="hero">
+            <h1>🏏 Player Records</h1>
+            <p>Search a player's career stats by format</p>
+        </header>
+
+        <section class="search-card">
+            <div class="field">
+                <label for="playerName">Player name</label>
+                <input list="playerNames" id="playerName" type="text" placeholder="e.g. Virat Kohli" autocomplete="off">
+                <datalist id="playerNames"></datalist>
+            </div>
+
+            <div class="field">
+                <label>Format</label>
+                <div class="format-toggle" id="formatToggle">
+                    <button type="button" class="format-btn active" data-format="TEST">Test</button>
+                    <button type="button" class="format-btn" data-format="ODI">ODI</button>
+                    <button type="button" class="format-btn" data-format="T20">T20</button>
+                </div>
+            </div>
+
+            <button id="searchBtn" class="search-btn">Search</button>
+        </section>
+
+        <section id="resultArea" class="result-area" hidden></section>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

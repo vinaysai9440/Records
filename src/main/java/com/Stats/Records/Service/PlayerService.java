@@ -1,13 +1,14 @@
 package com.Stats.Records.Service;
 import com.Stats.Records.Request.PlayerRequest;
+import com.Stats.Records.Request.PlayerStatsRequest;
 import com.Stats.Records.Response.PlayerResponse;
-import com.Stats.Records.entites.Player;
+import com.Stats.Records.Response.PlayerStatsResponse;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface PlayerService {
-    PlayerResponse findByPlayerNameAndCountry(String playerName,String country);
     PlayerResponse savePlayer(PlayerRequest request);
-    PlayerResponse batsMan_AVG(String PlayerName,String Country);
+    PlayerResponse saveStats(PlayerStatsRequest request);
+    PlayerStatsResponse getStats(String playerName, String format);
+    List<String> getAllPlayerNames();
 }

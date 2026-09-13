@@ -15,7 +15,7 @@ public class LoggingAspect {
     //Learn levels in log like info,warn.. etc.
     //return type('*'- wildcard), class-name.method-name(args)
     //advice -
-    @Before("execution(* com.Stats.Records.controller.PlayerController.findPl(..))")
+    @Before("execution(* com.Stats.Records.Controller.PlayerController.findPl(..))")
     public void logMethodCall()
     {
         logger.info("Method-Called");
