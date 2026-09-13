@@ -15,6 +15,17 @@ built-in web UI for looking up a player's career numbers by format.
 
 ![Player Records UI](docs/screenshot.png)
 
+## Live demo
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/vinaysai9440/Records)
+
+**Live link:** _not deployed yet — click the button above to deploy your own copy for free on Render (uses the included `render.yaml`), then drop the URL here._
+
+The blueprint deploys the app with the in-memory `dev` profile, so no database
+setup is needed — it comes up with the seeded sample players out of the box.
+Data resets whenever the service restarts or redeploys, so this is meant for
+demoing the UI, not for storing real data (use the Postgres setup below for that).
+
 ## Tech stack
 
 - Java 21, Spring Boot 3 (Web, Data JPA, Security, AOP)
